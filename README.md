@@ -1,0 +1,190 @@
+# deriva-react-template
+
+You can use this template for creating new React applications.
+
+## Table of contents
+- [Development dependencies](#development-dependencies)
+- [Development](#development)
+- [Building and deploying](#building-and-deploying)
+- [Local testing](#local-testing)
+- [Customizing this reposotiry](#customizing-this-reposotiry)
+  - [Renaming the app](#renaming-the-app)
+  - [Adding more apps](#adding-more-apps
+
+
+## Development dependencies
+
+1. [make](https://en.wikipedia.org/wiki/Makefile): Make is required for any build or development. With `make` only the non-minified package can be built and installed.
+2. [Node.js](https://www.nodejs.org): Node is required for most development operations including linting, minifying, and testing.
+3. [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm): used for installing dependencies used for both building and testing ERMrestJS.
+
+## Development
+
+Please take a look at [Chaise's dev guide](https://github.com/informatics-isi-edu/chaise/blob/master/docs/dev-docs/dev-guide.md) for information about best practices.
+
+
+## Building and deploying
+
+If you want to build the package, you will need to have `Node.js` installed and on your path. The build script will pull in all of the
+dependencies into the `/dist/` directory. If you want to test this locally, please refer to [this section](#local-testing)
+
+
+1. First you need to make sure ermrestjs is installed on the server that you're testing. If that's not the case, please follow [ermrestjs's installation guide](https://github.com/informatics-isi-edu/ermrestjs/blob/master/docs/user-docs/installation.md).
+
+2. You need to setup some environment variables so we know where we should install the package. The following are the variables and their default values:
+
+    ```sh
+    WEB_URL_ROOT=/
+    WEB_INSTALL_ROOT=/var/www/html/
+    DERIVA_REACT_APP_REL_PATH=deriva-react-app/
+
+    CHAISE_REL_PATH=chaise/
+    ```
+    Which means deriva React app build folder will be copied to `/var/www/html/deriva-react-app/` location by default. And the URL path of the React app is `/deriva-react-app/`. If that is not the case in your deployment, you should modify the variables accordingly.
+
+    Notes:
+    - All the variables MUST have a trailing `/`.
+
+    - If you're deploying remotely, since we're using the `WEB_INSTALL_ROOT` in `rsync` command, you can use a remote location `username@host:public_html/` for this variable.
+
+    - A very silly thing to do would be to set your deployment directory to root `/` and run `make deploy` with `sudo`. This would be very silly indeed, and would probably result in some corruption of your operating system. Surely, no one would ever do this. But, in the off chance that one might attempt such silliness, the `make deploy` rule specifies a `dont_deploy_in_root` prerequisite that attempts to put a stop to any such silliness before it goes too far.
+
+
+3. Build the bundles by running the following command:
+    ```sh
+    make dist
+    ```
+
+    Notes:
+    - Make sure to run this command with the owner of the current folder. If you attempt to run this with a different user, it will complain.
+    - This command will also install the npm packages everytime that is called. You can skip installing npm pacakges by using `make dist-wo-deps` command instead. If you want to install npm modules in a separate command, the following make targets are available:
+      - `deps`: Install the dependencies based on `NODE_ENV` environment variable (it will skip `devDependencies` if `NODE_ENV` is not defined or is "production").
+      - `npm-install-all-modules`: Install all dependencies including `devDependencies` regardless of `NODE_ENV` value.
+
+
+
+4. To deploy, you can use the `deploy` target:
+
+    ```
+    $ make deploy
+    ```
+
+    Notes:
+      - If the given directory does not exist, it will first create it. So you may need to run `make deploy` with _super user_ privileges depending on the deployment directory you choose.
+      - 
+
+
+
+## Local testing
+
+By following the previous instrocutions and building the app, a new `dist` folder is created. And then we deploy this folder into a desired location (either remote or local). If you want to avoid deploying it on the server and want to build the files and test it locally, you can follow these steps instead:
+
+1. Ensure [Node.js](https://nodejs.org/en/) is installed on your machine. We recommend installing it with [nvm](https://github.com/nvm-sh/nvm), allowing you to switch between different versions easily.
+
+2. You need to create a parent folder that, in the end, we can serve. All the repositories you will clone (including this one) must have the same parent folder and are siblings. In my case, I created a folder called "isrd":
+
+    ```sh
+    mkdir isrd
+    cd isrd
+    ``` 
+
+3. Chaise apps assume that `ermrestjs` is installed in the same parent folder, and then you can use `ERMRESTJS_REL_PATH`, `CHAISE_REL_PATH`, and `DERIVA_REACT_APP_REL_PATH` to specify their location relative to this parent folder. Therefore we will clone `ermrestjs` in the same directory as this repostiory:
+
+    ```sh
+    git clone git@github.com:informatics-isi-edu/ermrestjs.git
+    git clone git@github.com:informatics-isi-edu/deriva-react-template.git
+    ```
+    Notes:
+      - You most probably have created a sperate repository out of `deriva-react-template`. If that's the case, clone that repository instead.
+
+4. Our build process can be customized by defining environment variables. The following is how you should define them for this local installation: 
+
+    ```sh
+    export WEB_URL_ROOT=./../
+    export DERIVA_REACT_APP_REL_PATH=
+    export ERMRESTJS_REL_PATH=../../../ermrestjs/dist/
+    export CHAISE_REL_PATH=../../../chaise/dist/
+    ```
+
+5. Use `echo` command to make sure these variables are correct, so
+
+    ```sh
+    echo $WEB_URL_ROOT
+    echo $WEB_INSTALL_ROOT
+    echo $ERMRESTJS_REL_PATH
+    echo $CHAISE_REL_PATH
+    ```
+    This should print the defined values, not `/var/www/html` paths or empty values.
+
+6. Build ermrestjs:
+    
+    ```sh
+     cd ermrestjs
+     make dist
+     ```
+     If this step was successful, you should see a `dist` folder under `ermrestjs` folder.
+
+
+7. The previous steps are only needed for the initial setup, and you don't need to repeat them when implementing deriva React app features. So now let's go to the deriva-react-template folder:
+
+    ```sh
+    cd ../deriva-react-template
+    ```
+    Notes:
+      - You most probably have created a sperate repository out of `deriva-react-template`. If that's the case, go to the proper folder.
+
+8. While you can build deriva React apps with the same `make dist` command as ermrestjs, it will always reinstall npm packages. While developing features, it might be better to skip this step. That's why we directly install the dependencies and then use an alternative command to skip the reinstallation of npm packages. So run the following to install all the dependencies:
+    
+    ```sh
+    make npm-install-all-modules
+    ```
+
+9.  (optional) Properly define `NODE_ENV` depending on whether you want to install in "development" mode or "production":
+
+    ```sh
+    export NODE_ENV="production"
+    ```
+    - Use "production" mode by default. Use "development" mode only when you want to debug.
+    - If this environment variable is not defined, it will default to "production" mode.
+
+10. If you look at the `src/pages/example.tsx` implementation, you can see that we're using Chaise's `AppWrapper`. This will inject all the styles that we need. By default, it will also fetch the user session on load. Since we're testing locally, we should skip that as that request will just fail. So make sure to add `dontFetchSession` to props of `AppWrapper`.
+
+    ```tsx
+    <AppWrapper ... dontFetchSession >
+    ```
+
+11. Build the app:
+
+    ```sh
+    make dist-wo-deps
+    ```
+    If this step was successful, you should see a `dist` folder.
+
+
+12. You can now access the React app by opening the `deriva-react-template/dist/react/example/index.html` file in a browser. But this will give you a CORS error while fetching the data. To solve this, you need to serve the parent `isrd` folder we created using some server plugin. The simplest way to achieve this is using the [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) of [VS code](https://code.visualstudio.com/). I highly recommend using VSCode for development in general. For this, follow the following steps:
+    1. Install [VS Code](https://code.visualstudio.com/).
+    2. Install [Live server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+    3. Open the `isi` folder in VS Code. I recommend creating a workspace based on this folder.
+    4. You will see a "Go Live" button on the bottom right of VS Code. Click on it.
+    5. It will open a browser and shows the content of `isrd` folder. Navigate to `deriva-react-template/dist/react/example`
+    6. You should see the matrix app properly loaded.
+
+13. If you make any changes to your local deriva-react-template, you just need to run `make dist-wo-deps` and that should create the new bundles for you.
+
+
+
+## Customizing this reposotiry
+
+### Renaming the app
+
+In this template, we're creating a `example` app. The main entry to the app is under `src/pages/example.tsx`. If you would like to customize it:
+
+1. The file name `<>.tsx` is important. In the `webpack/main.config.js`, the `appName` that you're passing must be the same as this filename. So for example if you want to rename it to `myapp.tsx`, make sure to also change `appName` to `myapp`. The `appTitle` is just the title that will be displayed in the browser and can be any string that you want.
+
+### Adding more apps
+
+1. Start by creating a new file under `src/pages`. Let's say you've named it `new-app.tsx`. This file would be the entry point to your app. Take a look at `src/pages/example.tsx` as an example.
+2. We now need to let `webpack` know that we want a separate bundle. To do so, open the `webpack/main.config.js` file.
+3. The first parameter of `getWebPackConfig` is an array. Each element in this array configures an app. Please refer to [the Chaise code](https://github.com/informatics-isi-edu/chaise/blob/master/webpack/app.config.js#L7,L37) for more information. `appName` and `appTitle` are the only required properties:
+  - `appName`: The filename that you chose in step 1.
+  - `appTitle`: The title that you want browsers to display at the top of the tab or window.

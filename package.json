@@ -1,0 +1,13 @@
+{
+  "name": "deriva-react-template",
+  "version": "0.0.1",
+  "description": "A template for creating react apps that use chaise",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/informatics-isi-edu/deriva-react-template.git"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@isrd-isi-edu/chaise": "^0.0.12"
+  }
+}
