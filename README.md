@@ -8,9 +8,6 @@ You can use this template for creating new React applications.
 - [Building and deploying](#building-and-deploying)
 - [Local testing](#local-testing)
 - [Customizing this reposotiry](#customizing-this-reposotiry)
-  - [Renaming the app](#renaming-the-app)
-  - [Adding more apps](#adding-more-apps
-
 
 ## Development dependencies
 
