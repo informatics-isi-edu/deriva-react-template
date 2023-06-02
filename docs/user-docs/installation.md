@@ -1,5 +1,11 @@
 # Installation
 
+## Table of contents
+
+- [Development dependencies](#development-dependencies)
+- [Building and deploying](#building-and-deploying)
+- [Local testing](#local-testing)
+
 ## Development dependencies
 
 1. [make](https://en.wikipedia.org/wiki/Makefile): Make is required for any build or development. With `make` only the non-minified package can be built and installed.
@@ -8,11 +14,11 @@
 
 ## Building and deploying
 
-If you want to build the package, you will need to have `Node.js` installed and on your path. The build script will pull in all of the
+To build the package, you must have `Node.js` installed and on your path. The build script will pull in all of the
 dependencies into the `/dist/` directory. If you want to test this locally, please refer to [this section](#local-testing)
 
 
-1. First you need to make sure ermrestjs is installed on the server that you're testing. If that's not the case, please follow [ermrestjs's installation guide](https://github.com/informatics-isi-edu/ermrestjs/blob/master/docs/user-docs/installation.md).
+1. First, you need to ensure ermrestjs is installed on the server you're testing. If that's not the case, please follow [ermrestjs's installation guide](https://github.com/informatics-isi-edu/ermrestjs/blob/master/docs/user-docs/installation.md).
 
 2. You need to setup some environment variables so we know where we should install the package. The following are the variables and their default values:
 
@@ -39,10 +45,10 @@ dependencies into the `/dist/` directory. If you want to test this locally, plea
     ```
 
     Notes:
-    - Make sure to run this command with the owner of the current folder. If you attempt to run this with a different user, it will complain.
-    - This command will also install the npm packages everytime that is called. You can skip installing npm pacakges by using `make dist-wo-deps` command instead. If you want to install npm modules in a separate command, the following make targets are available:
+    - Make sure to run this command with the owner of the current folder. It will complain if you attempt to run this with a different user.
+    - This command will also install the npm packages every time that is called. You can skip installing npm packages using the `make dist-wo-deps` command instead. If you want to install npm modules in a separate command, the following make targets are available:
       - `deps`: Install the dependencies based on `NODE_ENV` environment variable (it will skip `devDependencies` if `NODE_ENV` is not defined or is "production").
-      - `npm-install-all-modules`: Install all dependencies including `devDependencies` regardless of `NODE_ENV` value.
+      - `npm-install-all-modules`: Install all dependencies, including `devDependencies` regardless of `NODE_ENV` value.
 
 
 
@@ -60,7 +66,9 @@ dependencies into the `/dist/` directory. If you want to test this locally, plea
 
 ## Local testing
 
-By following the previous instrocutions and building the app, a new `dist` folder is created. And then we deploy this folder into a desired location (either remote or local). If you want to avoid deploying it on the server and want to build the files and test it locally, you can follow these steps instead:
+By following the previous instructions and building the app, a new `dist` folder is created. And then, we deploy this folder into a desired location (remote or local). If you want to avoid deploying it on the server and want to build the files and test it locally, you can follow these steps instead:
+
+> :warning: Testing this way has limitations as the features that require communication with server might not work as expected.
 
 1. Ensure [Node.js](https://nodejs.org/en/) is installed on your machine. We recommend installing it with [nvm](https://github.com/nvm-sh/nvm), allowing you to switch between different versions easily.
 
@@ -71,14 +79,15 @@ By following the previous instrocutions and building the app, a new `dist` folde
     cd isrd
     ``` 
 
-3. Chaise apps assume that `ermrestjs` is installed in the same parent folder, and then you can use `ERMRESTJS_REL_PATH`, `CHAISE_REL_PATH`, and `DERIVA_REACT_APP_REL_PATH` to specify their location relative to this parent folder. Therefore we will clone `ermrestjs` in the same directory as this repostiory:
+3. Chaise apps assume that `ermrestjs` is installed in the same parent folder, and then you can use `ERMRESTJS_REL_PATH`, `CHAISE_REL_PATH`, and `DERIVA_REACT_APP_REL_PATH` to specify their location relative to this parent folder. Therefore we will clone `ermrestjs` in the same directory as this repository:
 
     ```sh
     git clone git@github.com:informatics-isi-edu/ermrestjs.git
     git clone git@github.com:informatics-isi-edu/deriva-react-template.git
     ```
     Notes:
-      - You most probably have created a sperate repository out of `deriva-react-template`. If that's the case, clone that repository instead.
+      - You probably have created a separate repository from `deriva-react-template`. If that's the case, clone that repository instead.
+      - If you've forked this repository, make sure you're cloning your forked repository instead.
 
 4. Our build process can be customized by defining environment variables. The following is how you should define them for this local installation: 
 
@@ -108,13 +117,13 @@ By following the previous instrocutions and building the app, a new `dist` folde
      If this step was successful, you should see a `dist` folder under `ermrestjs` folder.
 
 
-7. The previous steps are only needed for the initial setup, and you don't need to repeat them when implementing deriva React app features. So now let's go to the deriva-react-template folder:
+7. The previous steps are only needed for the initial setup; you don't need to repeat them when implementing deriva React app features. So now let's go to the deriva-react-template folder:
 
     ```sh
     cd ../deriva-react-template
     ```
     Notes:
-      - You most probably have created a sperate repository out of `deriva-react-template`. If that's the case, go to the proper folder.
+      - You probably have created a separate repository from `deriva-react-template`. If that's the case, go to the proper folder.
 
 8. While you can build deriva React apps with the same `make dist` command as ermrestjs, it will always reinstall npm packages. While developing features, it might be better to skip this step. That's why we directly install the dependencies and then use an alternative command to skip the reinstallation of npm packages. So run the following to install all the dependencies:
     
@@ -122,7 +131,7 @@ By following the previous instrocutions and building the app, a new `dist` folde
     make npm-install-all-modules
     ```
 
-9.  (optional) Properly define `NODE_ENV` depending on whether you want to install in "development" mode or "production":
+9. (optional) Properly define `NODE_ENV` depending on whether you want to install in "development" mode or "production":
 
     ```sh
     export NODE_ENV="production"
@@ -130,7 +139,7 @@ By following the previous instrocutions and building the app, a new `dist` folde
     - Use "production" mode by default. Use "development" mode only when you want to debug.
     - If this environment variable is not defined, it will default to "production" mode.
 
-10. If you look at the `src/pages/example.tsx` implementation, you can see that we're using Chaise's `AppWrapper`. This will inject all the styles that we need. By default, it will also fetch the user session on load. Since we're testing locally, we should skip that as that request will just fail. So make sure to add `dontFetchSession` to props of `AppWrapper`.
+10. If you look at the `src/pages/example.tsx` implementation, you can see that we're using Chaise's `AppWrapper`. This will inject all the styles that we need. By default, it will also fetch the user session on load. We should skip that since we're testing locally, as that request will fail. So make sure to add `dontFetchSession` to the props of `AppWrapper`.
 
     ```tsx
     <AppWrapper ... dontFetchSession >
@@ -152,6 +161,6 @@ By following the previous instrocutions and building the app, a new `dist` folde
     5. It will open a browser and shows the content of `isrd` folder. Navigate to `deriva-react-template/dist/react/example`
     6. You should see the matrix app properly loaded.
 
-13. If you make any changes to your local deriva-react-template, you just need to run `make dist-wo-deps` and that should create the new bundles for you.
+13. If you change your local deriva-react-template, you must run `make dist-wo-deps`, which should create the new bundles for you.
 
 
