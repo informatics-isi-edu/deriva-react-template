@@ -29,7 +29,9 @@ dependencies into the `/dist/` directory. If you want to test this locally, plea
 
     CHAISE_REL_PATH=chaise/
     ```
-    Which means deriva React app build folder will be copied to `/var/www/html/deriva-react-app/` location by default. And the URL path of the React app is `/deriva-react-app/`. If that is not the case in your deployment, you should modify the variables accordingly.
+    Notes:
+    - Which means deriva React app build folder will be copied to `/var/www/html/deriva-react-app/` location by default. And the URL path of the React apps under this repository would be `/deriva-react-app/APP_NAME/` where `APP_NAME` is the name that you've chosen for you app.
+    - In [here](../dev-docs/dev-guide.md#recommended-location-for-the-apps) we discuss the recommended location for the apps and how we suggest setting `DERIVA_REACT_APP_REL_PATH` variable.
 
     Notes:
     - All the variables MUST have a trailing `/`.
@@ -60,7 +62,7 @@ dependencies into the `/dist/` directory. If you want to test this locally, plea
 
     Notes:
       - If the given directory does not exist, it will first create it. So you may need to run `make deploy` with _super user_ privileges depending on the deployment directory you choose.
-      - 
+      -
 
 
 
@@ -77,7 +79,7 @@ By following the previous instructions and building the app, a new `dist` folder
     ```sh
     mkdir isrd
     cd isrd
-    ``` 
+    ```
 
 3. Chaise apps assume that `ermrestjs` is installed in the same parent folder, and then you can use `ERMRESTJS_REL_PATH`, `CHAISE_REL_PATH`, and `DERIVA_REACT_APP_REL_PATH` to specify their location relative to this parent folder. Therefore we will clone `ermrestjs` in the same directory as this repository:
 
@@ -89,7 +91,7 @@ By following the previous instructions and building the app, a new `dist` folder
       - You probably have created a separate repository from `deriva-react-template`. If that's the case, clone that repository instead.
       - If you've forked this repository, make sure you're cloning your forked repository instead.
 
-4. Our build process can be customized by defining environment variables. The following is how you should define them for this local installation: 
+4. Our build process can be customized by defining environment variables. The following is how you should define them for this local installation:
 
     ```sh
     export WEB_URL_ROOT=./../
@@ -109,7 +111,7 @@ By following the previous instructions and building the app, a new `dist` folder
     This should print the defined values, not `/var/www/html` paths or empty values.
 
 6. Build ermrestjs:
-    
+
     ```sh
      cd ermrestjs
      make dist
@@ -126,7 +128,7 @@ By following the previous instructions and building the app, a new `dist` folder
       - You probably have created a separate repository from `deriva-react-template`. If that's the case, go to the proper folder.
 
 8. While you can build deriva React apps with the same `make dist` command as ermrestjs, it will always reinstall npm packages. While developing features, it might be better to skip this step. That's why we directly install the dependencies and then use an alternative command to skip the reinstallation of npm packages. So run the following to install all the dependencies:
-    
+
     ```sh
     make npm-install-all-modules
     ```
