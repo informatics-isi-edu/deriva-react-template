@@ -18,11 +18,11 @@ Please look at [Chaise's dev guide](https://github.com/informatics-isi-edu/chais
 
 ### Recommended location for the apps
 
-As mentioned in [the installation guide](../user-docs/installation.md), you must define where to deploy this repository. This repository is designed to handle a collection of React applications. Therefore, with `DERIVA_REACT_APP_REL_PATH`, you're just describing the parent folder of bundles and all the apps defined in this repository. So if you didn't make any changes to the code or environment variables, the custom application will be accessible under `/deriva-react-app/example/` location.
+As mentioned in [the installation guide](../user-docs/installation.md), you should specify where to deploy this repository using `DERIVA_REACT_APP_REL_PATH` envronment variable. This repository is designed to handle a collection of React applications. Therefore, with `DERIVA_REACT_APP_REL_PATH`, you're just describing the parent folder of bundles and all the apps defined in this repository. So if you didn't make any changes to the code or environment variables, the custom application will be accessible under `/deriva-react-app/example/` location.
 
 In deriva, we would like to group all customized apps under the `/apps/` location (`/var/www/html/apps/`). We highly discourage defining `DERIVA_REACT_APP_REL_PATH` as the same folder as apps from other sources. This folder should only be designated for the apps described in this repository and nothing else. Therefore, you should define `DERIVA_REACT_APP_REL_PATH` in the `/apps/NAME/` format, where `NAME` describes this repository (your set of applications).
 
-For example, you could do `/apps/graphs/` if all your apps show different graphs. And then, let's say you have a `plot` app in this repository, so your app would be accessible under `/app/graphs/plot/`.
+For example, you could do `/apps/graphs/` if all your apps show different graphs. And then, let's say you have a `gene` app in this repository, so your app would be accessible under `/app/graphs/gene/`.
 
 ### Renaming the app
 
