@@ -6,6 +6,7 @@ This is a guide for people who develop front-end applications.
 
 - [Chaise developer guide](#chaise-developer-guide)
 - [Customizing this repository](#customizing-this-repository)
+  - [Recommended location for the apps](#recommended-location-for-the-apps)
   - [Renaming the app](#renaming-the-app)
   - [Adding an app with a configuration file](#adding-an-app-with-a-configuration-file)
   - [Adding more apps](#adding-more-apps)
