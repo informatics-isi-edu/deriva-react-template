@@ -122,15 +122,29 @@ deploy: dont_deploy_in_root
 	@rsync -avz --exclude='$(REACT_BUNDLES_FOLDERNAME)' $(DIST)/react/ $(DERIVA_REACT_APPDIR)
 	@rsync -avz --delete $(REACT_BUNDLES) $(DERIVA_REACT_APPDIR)
 
+# run dist and deploy with proper uesrs (GNU). only works with root user
+.PHONY: root-install
+root-install:
+	su $(shell stat -c "%U" Makefile) -c "make dist"
+	make deploy
+
+# run dist and deploy with proper uesrs (FreeBSD and MAC OS X). only works with root user
+.PHONY: root-install-alt
+root-install-alt:
+	su $(shell stat -f '%Su' Makefile) -c "make dist"
+	make deploy
+
 
 #Rules for help/usage
 .PHONY: help usage
 help: usage
 usage:
 	@echo "Usage: make [target]"
-	@echo "Available targets:"]
+	@echo "Available targets:"
 	@echo "  clean                            remove the files and folders created during installation"
 	@echo "  deps                             install npm dependencies (honors NODE_ENV)"
 	@echo "  dist                             local install of node dependencies, build the app(s)."
 	@echo "  dist-wo-deps                     build the app(s)."
 	@echo "  deploy                           deploy the app(s)."
+	@echo "  root-install                     should only be used as root. will use dist with proper user and then deploy, for GNU systems"
+	@echo "  root-install-alt                 should only be used as root. will use dist with proper user and then deploy, for FreeBSD and MAC OS X"
