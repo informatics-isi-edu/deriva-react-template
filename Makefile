@@ -62,11 +62,10 @@ $(BUILD_VERSION):
 npm-install-modules:
 	@npm clean-install
 
-# install packages needed for production and development (including testing)
-# --production=false makes sure to ignore NODE_ENV and install everything
+# install packages needed for production and development
 .PHONY: npm-install-all-modules
 npm-install-all-modules:
-	@npm clean-install --production=false
+	@npm clean-install --include=dev
 
 # run webpack to build the react folder and bundles in it, and
 # copy the external vendor files that webpack expects into react folder
